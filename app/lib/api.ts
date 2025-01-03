@@ -1,11 +1,7 @@
 import { Book } from "./types";
 
-// Determine the base URL dynamically
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || // Use the environment variable in production
-  (typeof window === "undefined"
-    ? "http://localhost:3000" // Use this for SSR during local development
-    : ""); // Empty string for client-side calls
+// Use the environment variable in production, otherwise default to localhost during local development
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 export async function getBooks(): Promise<Book[]> {
   const res = await fetch(`${API_BASE_URL}/api/books`, { cache: "no-store" });
