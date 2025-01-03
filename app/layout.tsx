@@ -39,6 +39,7 @@ import './globals.css'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import { CartProvider } from './context/CartContext'
+import Newsletter from './components/Newsletter'
 
 export const metadata = {
   title: 'Libris Haven',
@@ -56,6 +57,7 @@ export default function RootLayout({
         <CartProvider>
           <Header />
           <main>{children}</main>
+          <Newsletter/>
           <Footer />
         </CartProvider>
       </body>

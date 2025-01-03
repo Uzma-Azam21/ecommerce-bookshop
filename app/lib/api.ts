@@ -1,41 +1,30 @@
 import { Book } from "./types";
 
+// Determine the base URL dynamically
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api";
+  process.env.NEXT_PUBLIC_API_URL || // Use the environment variable in production
+  (typeof window === "undefined"
+    ? "http://localhost:3000" // Use this for SSR during local development
+    : ""); // Empty string for client-side calls
 
-/**
- * Fetches the list of books from the API.
- * Ensures the latest data by using `cache: 'no-store'`.
- */
 export async function getBooks(): Promise<Book[]> {
-  const res = await fetch(`${API_BASE_URL}/books`, {
-    cache: "no-store", // Prevent caching to ensure fresh data
-  });
-
+  const res = await fetch(`${API_BASE_URL}/api/books`, { cache: "no-store" });
   if (!res.ok) {
     throw new Error("Failed to fetch books");
   }
-
   return res.json();
 }
 
-/**
- * Fetches a specific book by ID from the API.
- * Ensures fresh data and handles 404 errors gracefully.
- *
- * @param id - The ID of the book to fetch
- */
 export async function getBook(id: string): Promise<Book | null> {
-  const res = await fetch(`${API_BASE_URL}/books/${id}`, {
-    cache: "no-store", // Prevent caching to ensure fresh data
+  const res = await fetch(`${API_BASE_URL}/api/books/${id}`, {
+    cache: "no-store",
   });
-
   if (!res.ok) {
     if (res.status === 404) {
-      return null; // Return null if the book is not found
+      console.error(`Book with ID ${id} not found`);
+      return null;
     }
-    throw new Error("Failed to fetch book");
+    throw new Error(`Failed to fetch book with status ${res.status}`);
   }
-
   return res.json();
 }
